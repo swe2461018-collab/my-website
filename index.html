@@ -1,17 +1,75 @@
 <!DOCTYPE html>
 <html lang="mn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Миний Нэр</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
-        h1 { color: #2c3e50; }
-        p { color: #34495e; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Төрсөн өдрийн мэнд</title>
+<style>
+  body { font-family: Arial; text-align:center; margin:0; padding:0; background:#f5f5f5; }
+  #countdown { font-size: 3em; margin-top: 20%; }
+  #birthday { display:none; padding:50px; }
+  #slides { max-width:600px; margin:50px auto; position:relative; }
+  .slide { display:none; width:100%; }
+</style>
 </head>
 <body>
-    <h1>Сайн байна уу! Би [Таны нэр] байна.</h1>
-    <p>Энд таны тухай мэдээлэл оруулна.</p>
+
+<!-- Countdown -->
+<div id="countdown"></div>
+
+<!-- Birthday message -->
+<div id="birthday">
+  <h1>Сайн байна уу [Нэр]! 🎉</h1>
+  <p>Төрсөн өдрийн мэнд хүргэе!</p>
+
+  <!-- Slide show -->
+  <div id="slides">
+    <img class="slide" src="zurag1.jpg" alt="">
+    <img class="slide" src="zurag2.jpg" alt="">
+    <img class="slide" src="zurag3.jpg" alt="">
+  </div>
+</div>
+
+<script>
+// Countdown
+const countdownElement = document.getElementById('countdown');
+const birthdayDiv = document.getElementById('birthday');
+
+const targetDate = new Date("2025-11-16T00:00:00");
+
+function updateCountdown() {
+  const now = new Date();
+  const diff = targetDate - now;
+  if(diff <= 0) {
+    countdownElement.style.display = 'none';
+    birthdayDiv.style.display = 'block';
+    startSlideShow();
+    clearInterval(interval);
+    return;
+  }
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff / (1000*60*60)) % 24);
+  const minutes = Math.floor((diff / (1000*60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+  countdownElement.innerHTML = `${days} хоног ${hours} цаг ${minutes} мин ${seconds} сек`;
+}
+
+const interval = setInterval(updateCountdown, 1000);
+updateCountdown();
+
+// Slide show
+function startSlideShow() {
+  let i = 0;
+  const slides = document.getElementsByClassName("slide");
+  function showSlide() {
+    for(let j=0;j<slides.length;j++) slides[j].style.display="none";
+    slides[i].style.display="block";
+    i = (i+1)%slides.length;
+    setTimeout(showSlide,3000); // 3 секунд тутам сольж үзүүлэх
+  }
+  showSlide();
+}
+</script>
+
 </body>
 </html>
