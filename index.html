@@ -3,13 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Төрсөн өдрийн мэнд</title>
+<title>Төрсөн өдрийн мэнд [Нэр]</title>
 <style>
-  body { font-family: Arial; text-align:center; margin:0; padding:0; background:#f5f5f5; }
+  body { font-family: Arial, sans-serif; text-align:center; margin:0; padding:0; background:#ffe6e6; overflow-x:hidden; }
   #countdown { font-size: 3em; margin-top: 20%; }
-  #birthday { display:none; padding:50px; }
+  #birthday { display:none; padding:50px; position:relative; }
   #slides { max-width:600px; margin:50px auto; position:relative; }
-  .slide { display:none; width:100%; }
+  .slide { display:none; width:100%; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.3); }
+  h1 { font-size:2.5em; color:#ff3366; }
+  canvas { position:fixed; top:0; left:0; pointer-events:none; z-index:9999; }
 </style>
 </head>
 <body>
@@ -26,16 +28,19 @@
   <div id="slides">
     <img class="slide" src="zurag1.jpg" alt="">
     <img class="slide" src="zurag2.jpg" alt="">
-    <img class="slide" src="zurag3.jpg" alt="">
+    <!-- Дурын хэмжээгээр зураг нэмэх боломжтой -->
   </div>
 </div>
+
+<!-- Confetti canvas -->
+<canvas id="confetti"></canvas>
 
 <script>
 // Countdown
 const countdownElement = document.getElementById('countdown');
 const birthdayDiv = document.getElementById('birthday');
 
-const targetDate = new Date("2025-11-13T00:00:00");
+const targetDate = new Date("2025-11-13T01:32:00");
 
 function updateCountdown() {
   const now = new Date();
@@ -44,6 +49,7 @@ function updateCountdown() {
     countdownElement.style.display = 'none';
     birthdayDiv.style.display = 'block';
     startSlideShow();
+    startConfetti();
     clearInterval(interval);
     return;
   }
@@ -65,9 +71,54 @@ function startSlideShow() {
     for(let j=0;j<slides.length;j++) slides[j].style.display="none";
     slides[i].style.display="block";
     i = (i+1)%slides.length;
-    setTimeout(showSlide,3000); // 3 секунд тутам сольж үзүүлэх
+    setTimeout(showSlide,3000);
   }
   showSlide();
+}
+
+// Confetti
+function startConfetti() {
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const confettiCount = 150;
+  const confetti = [];
+
+  for(let i=0;i<confettiCount;i++){
+    confetti.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height - canvas.height,
+      r: Math.random()*6+4,
+      d: Math.random()*confettiCount,
+      color: `hsl(${Math.random()*360}, 100%, 50%)`,
+      tilt: Math.random()*10-10
+    });
+  }
+
+  function drawConfetti() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confetti.forEach(c=>{
+      ctx.beginPath();
+      ctx.lineWidth = c.r/2;
+      ctx.strokeStyle = c.color;
+      ctx.moveTo(c.x + c.tilt + c.r/4, c.y);
+      ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r/4);
+      ctx.stroke();
+    });
+    updateConfetti();
+  }
+
+  function updateConfetti() {
+    confetti.forEach(c=>{
+      c.y += Math.cos(c.d) + 1 + c.r/2;
+      c.x += Math.sin(c.d) * 2;
+      if(c.y > canvas.height){ c.y = -10; c.x = Math.random()*canvas.width; }
+    });
+  }
+
+  setInterval(drawConfetti, 20);
 }
 </script>
 
