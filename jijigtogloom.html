@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Зүрхийг бариарай ❤️</title>
+<style>
+  body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+
+  /* Анимэйшнтэй pastel gradient */
+  background: linear-gradient(120deg,
+    #ffd6e7,
+    #ffe8f3,
+    #d4f1ff,
+    #e3ffe7,
+    #fff3d6
+  );
+  background-size: 400% 400%;
+  animation: bgMove 18s ease-in-out infinite;
+}
+
+/* Background slow smooth animation */
+@keyframes bgMove {
+  0%   { background-position: 0% 50%; }
+  25%  { background-position: 100% 50%; }
+  50%  { background-position: 50% 100%; }
+  75%  { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+
+  h1 {
+    color: #ff3366;
+    font-size: 2.5em;
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 3px white;
+  }
+
+  p {
+    color: #ff6699;
+    font-size: 1.2em;
+    margin: 0;
+  }
+
+  #score {
+    font-size: 1.3em;
+    color: #ff3366;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+
+  .heart {
+    position: absolute;
+    font-size: 57px;
+    color: #ff3366;
+    cursor: pointer;
+    animation: fall 6s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    filter: drop-shadow(0 0 10px rgba(255, 80, 120, 0.5));
+  }
+
+@keyframes fall {
+  0% {
+    transform: translateY(-60px) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  40% {
+    transform: translateY(40vh) rotate(25deg) scale(1.15);
+  }
+  70% {
+    transform: translateY(70vh) rotate(-25deg) scale(0.95);
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg) scale(1);
+    opacity: 0;
+  }
+}
+
+
+.sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, white, rgba(255,255,255,0));
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkleAnim 700ms ease-out forwards;
+  opacity: 0.9;
+}
+
+@keyframes sparkleAnim {
+  0%   { transform: scale(1) translateY(0); opacity: 1; }
+  50%  { transform: scale(1.8) translateY(-20px); opacity: 0.9; }
+  100% { transform: scale(0.2) translateY(-40px); opacity: 0; }
+}
+
+.plus-one {
+  position: absolute;
+  color: #ff3366;
+  font-size: 24px;
+  font-weight: bold;
+  animation: popFade 0.8s ease-out forwards;
+  user-select: none;
+}
+
+@keyframes popFade {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  50% { transform: translateY(-30px) scale(1.4); opacity: 0.9; }
+  100% { transform: translateY(-50px) scale(1); opacity: 0; }
+}
+
+  #popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px 30px;
+    border-radius: 20px;
+    font-size: 1.5em;
+    color: #ff3366;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    display: none;
+    z-index: 1000;
+  }
+
+  #backBtn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #ff3366;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+  }
+
+  #backBtn:hover {
+    background: #ff6699;
+  }
+
+#finalPopup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 240, 245, 0.95);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 2000;
+  font-size: 2.4em;
+  color: #ff2d75;
+  font-weight: bold;
+  text-align: center;
+  display: none;
+  animation: popIn 0.8s ease forwards;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+#finalBtn {
+  margin-top: 20px;
+  padding: 12px 25px;
+  font-size: 1em;
+  background: #ff2d75;
+  color: white;
+  border-radius: 15px;
+  border: none;
+  cursor: pointer;
+}
+
+#finalBtn:hover {
+  background: #ff5f9f;
+}
+
+
+  #musicBtn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #ff3366;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+  }
+
+  #musicBtn:hover {
+    background: #ff6699;
+  }
+
+  #endMessage {
+    display: none;
+    font-size: 2em;
+    color: #ff3366;
+    text-align: center;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<h1>💖 Зүрхийг бариарай!</h1>
+<p>Зүрх дээр дараад оноо цуглуулаарай!</p>
+<div id="score">Оноо: 0</div>
+<div id="popup"></div>
+
+<div id="finalPopup">
+  🎉❤️Бүх 19 зүрхийг барьж чадлаа!❤️🎉 <br>
+  🎉❤️Миний мундаг хайр чинь ингээд 19 нас хүрлээшдээ баяр хүргэе! ❤️🎉
+</div>
+
+
+<audio id="bgMusic" loop>
+  <source src="gamebg.mp3" type="audio/mpeg">
+
+<audio id="pingSound">
+  <source src="pingsoundeffect.mp3" type="audio/mpeg">
+</audio>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+
+<script>
+const popup = document.getElementById('popup');
+const scoreDisplay = document.getElementById('score');
+const endMessage = document.getElementById('endMessage');
+const bgMusic = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicBtn');
+
+let score = 0;
+const goal = 19; // зорилтот оноо
+let gameEnded = false;
+ 
+// ❤️ Heart spawn
+function spawnHeart() {
+  if (gameEnded) return;
+  const heart = document.createElement('div');
+  heart.classList.add('heart');
+  heart.innerHTML = '❤️';
+  const randomX = Math.random() * (window.innerWidth - 50);
+  heart.style.left = randomX + "px";
+  heart.style.animationDuration = (5 + Math.random() * 3) + "s";
+  heart.style.animationTimingFunction = "cubic-bezier(0.25, 0.1, 0.25, 1)";
+
+  document.body.appendChild(heart);
+
+  heart.addEventListener('click', () => {
+    if (gameEnded) return;
+    
+    showPopup();
+    // +1 effect
+    const rect = heart.getBoundingClientRect();
+    showPlusOne(rect.left + rect.width/2, rect.top);
+
+    createSparkles(heart);
+    document.getElementById('pingSound').play();
+
+    heart.remove();
+    score++;
+    scoreDisplay.textContent = `Оноо: ${score}`;
+    if (score >= goal) {
+      endGame();
+    }
+  });
+
+  setTimeout(() => heart.remove(), 6000);
+}
+
+
+
+setInterval(spawnHeart, 800);
+
+function createSparkles(element) {
+  for (let i = 0; i < 12; i++) {
+    const s = document.createElement('div');
+    s.classList.add('sparkle');
+
+    // Sparkle гарах байрлал
+    const rect = element.getBoundingClientRect();
+    s.style.left = rect.left + rect.width / 2 + (Math.random()*20-10) + "px";
+    s.style.top  = rect.top + rect.height / 2 + (Math.random()*20-10) + "px";
+
+    document.body.appendChild(s);
+
+    // дууссан бол устгана
+    setTimeout(() => s.remove(), 700);
+  }
+}
+
+
+// 💌 Popup messages
+function showPopup() {
+  const messages = [
+  "Би чамд хайртай ❤️",
+  "Төрсөн өдрийн мэнд! 🎂",
+  "Үүрд хамтдаа 💞",
+  "I love you ❤️ ",
+  "Te amo ❤️ ",
+  "Je t’aime ❤️ ",
+  "Ich liebe dich ❤️ ",
+  "Ti amo ❤️ ",
+  "愛してるよ ❤️ ",
+  "사랑해 ❤️ ",
+  "Я тебя люблю ❤️ "
+  ];
+  const msg = messages[Math.floor(Math.random() * messages.length)];
+  popup.textContent = msg;
+  popup.style.display = 'block';
+  setTimeout(() => popup.style.display = 'none', 3000);
+}
+function confettiShoot() {
+  confetti({
+    particleCount: 180,
+    spread: 90,
+    startVelocity: 50,
+    origin: { y: 0.6 }
+  });
+}
+
+
+function showPlusOne(x, y) {
+  const plus = document.createElement("div");
+  plus.classList.add("plus-one");
+  plus.textContent = "+1";
+  plus.style.left = x + "px";
+  plus.style.top = y + "px";
+  document.body.appendChild(plus);
+
+  setTimeout(() => plus.remove(), 800);
+}
+
+
+// 🎯 End Game
+function endGame() {
+  gameEnded = true;
+
+  // Fullscreen popup харуулах
+  document.getElementById("finalPopup").style.display = "flex";
+
+  // popup дуугарах (хэрвээ хүсвэл)
+  // new Audio("success.mp3").play();
+
+  // Confetti 3 удаа хүчтэй буудна
+  confettiShoot();
+  setTimeout(confettiShoot, 700);
+  setTimeout(confettiShoot, 1400);
+
+  // Heart spawn зогсоно
+  popup.style.display = 'none';
+}
+
+</script>
+
+</body>
+</html>
