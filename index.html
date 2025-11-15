@@ -167,8 +167,36 @@ const countdownEl = document.getElementById("countdown");
 const birthdayMsg = document.getElementById("birthdayMsg");
 const hbSound = document.getElementById("hbSound");
 const romanticSound = document.getElementById("romanticSound");
+// 1. Тухайн target огноог Date объект болгож өгнө
+const targetDate = new Date('2025-11-16T00:00:00');
 
-const target = new Date(new Date().getTime() + 5000);
+// 2. Countdown update function
+ // таны countdown div
+
+function updateCountdown() {
+    const now = new Date();
+    let diff = targetDate - now; // миллисекундээр ялгаа
+
+    if (diff <= 0) {
+        countdownEl.innerText = "🎉 Тоглоом эхэллээ!";
+        clearInterval(interval);
+        // энд тоглоом эхлэх функцийг дуудах
+        showGreeting(); 
+        return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    countdownEl.innerText = 
+        `${days} өдр ${hours} цаг ${minutes} мин ${seconds} сек`;
+}
+
+// 3. Интервал
+const interval = setInterval(updateCountdown, 1000);
+updateCountdown();
 
 const timer = setInterval(() => {
   const now = new Date();
