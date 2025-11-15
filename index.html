@@ -3,98 +3,316 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Төрсөн өдрийн мэнд [Нэр]</title>
+<title> дуусахыг нь хүлээж байгаарай </title>
+
 <style>
-  body { font-family: Arial, sans-serif; text-align:center; margin:0; padding:0; background:#ffe6e6; overflow-x:hidden; }
-  #countdown { font-size: 3em; margin-top: 20%; }
-  #birthday { display:none; padding:50px; position:relative; }
-  #slides { max-width:600px; margin:50px auto; position:relative; }
-  .slide { display:none; width:100%; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.3); }
-  h1 { font-size:2.5em; color:#ff3366; }
-  canvas { position:fixed; top:0; left:0; pointer-events:none; z-index:9999; }
+  body {
+    margin:0;
+    padding:0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ffd6e8 0%, #ffb3d6 50%, #ff99cc 100%);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    overflow-x:hidden;
+  }
+
+  /* Glitter */
+  body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(255,255,255,0.95) 0.5px, transparent 1px),
+      radial-gradient(circle at 30% 60%, rgba(255,255,255,0.9) 0.6px, transparent 1.2px),
+      radial-gradient(circle at 70% 30%, rgba(255,255,255,0.92) 0.5px, transparent 1px);
+    background-size: 100px 100px, 120px 120px, 80px 80px;
+    animation: glitter 6s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes glitter {
+    0% { background-position: 0 0, 0 0, 0 0; }
+    100% { background-position: 200px 150px, 150px 120px, 100px 90px; }
+  }
+
+  #countdown {
+    font-size: 3em;
+    z-index: 10;
+    color:#fff;
+    text-shadow:0 0 10px rgba(0,0,0,0.4);
+    border:none;
+    border-radius:12px;
+    background:#ff4d88;
+    padding:12px 25px;
+  }
+
+  #birthdayMsg {
+    display:none;
+    text-align:center;
+    z-index: 10;
+    color :#ffffff;
+    text-shadow:0 0 10px rgba(0,0,0,0.4);
+  }
+
+  #startBtn {
+    padding:12px 25px;
+    border:none;
+    border-radius:12px;
+    background:#ff4d88;
+    color:white;
+    font-size:18px;
+    margin-top:20px;
+    cursor:pointer;
+  }
+
+  /* ---------------- SLIDESHOW ---------------- */
+  #slides {
+    position: relative;
+    width: 90vw;
+    max-width: 600px;
+    margin: 0 auto;
+    overflow: hidden;
+    display:none;       /* эхлээд нуух */
+    transition: height 0.4s ease;
+    z-index: 5;
+  }
+
+  .slide {
+    position: absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit: contain;
+    display:none;
+    opacity:0;
+    transition: opacity 0.8s ease;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.3);
+    box-shadow:0 0 15px rgba(0,0,0,0.3);
+  }
+
+#gameBtn {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    padding: 14px 22px;
+    border-radius: 14px;
+    background: #ff4f8b;
+    color: white;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    transition: 0.5s ease;
+}
+
+#gameBtn.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+
+#greetingBox {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.8s ease;
+}
+
+#greetingBox.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+  canvas {
+    position:fixed;
+    top:0;
+    left:0;
+    pointer-events:none;
+    z-index:9999;
+  }
 </style>
 </head>
+
 <body>
 
-<!-- Countdown -->
 <div id="countdown"></div>
 
-<!-- Birthday message -->
-<div id="birthday">
-  <h1> 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉</h1>
-  <h1> 🎉Төрсөн өдрийн мэнд хүргэе🎉</h1>
-  <h1> 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉</h1>
-  <!-- Slide show -->
-  <div id="slides">
-    <img class="slide" src="zurag1.JPG" alt="">
-    <img class="slide" src="zurag2.JPG" alt="">
-  </div>
+<div id="birthdayMsg">
+  <h1>❤️❤️❤️ХЕХХ Гүнждээ❤️❤️❤️ </h1>
+  <h1>🎉Төрсөн өдрийн мэнд хүргэе!🎉</h1>
+  <h1>Хайртай шүү!💖</h1>
+
+  <button id="startBtn">Энд дарвал гоё юм болно</button>
 </div>
 
-<!-- Confetti canvas -->
+<div id="slides"></div>
+
+<button id="gameBtn">Тоглоом тоглох 🎮</button>
+
 <canvas id="confetti"></canvas>
 
+<audio id="hbSound" src="hb.mp3" autoplay></audio>
+<audio id="romanticSound" src="romantic.mp3" loop autoplay></audio>
+
+
 <script>
-// Туршилт: одооноос 1 минутын дараа
-const countdownElement = document.getElementById('countdown');
-const birthdayDiv = document.getElementById('birthday');
-const now = new Date();
-const targetDate = new Date(now.getTime() + 0.05*60*1000); // 1 минутын дараа
+/* ---------------- COUNTDOWN ---------------- */
+const countdownEl = document.getElementById("countdown");
+const birthdayMsg = document.getElementById("birthdayMsg");
+const hbSound = document.getElementById("hbSound");
+const romanticSound = document.getElementById("romanticSound");
 
-function updateCountdown() {
+const target = new Date(new Date().getTime() + 5000);
+
+const timer = setInterval(() => {
   const now = new Date();
-  const diff = targetDate - now;
-  if(diff <= 0) {
-    countdownElement.style.display = 'none';
-    birthdayDiv.style.display = 'block';
-    startSlideShow();
+  const diff = target - now;
+
+  if (diff <= 0) {
+    clearInterval(timer);
+    birthdayMsg.classList.add("show");
+    countdownEl.style.display = "none";
+    birthdayMsg.style.display = "block";
+    hbSound.play().catch(err => console.log("Play failed:", err));
     startConfetti();
-    clearInterval(interval);
-    return;
+    createHearts();
+  } else {
+    countdownEl.innerHTML = Math.ceil(diff / 1000) + " секунд";
   }
-  const seconds = Math.floor((diff/1000)%60);
-  const minutes = Math.floor((diff/1000/60)%60);
-  countdownElement.innerHTML = `${minutes} мин ${seconds} сек`;
+}, 1000);
+
+function createHearts() {
+  for (let i = 0; i < 20; i++) {
+    const heart = document.createElement("div");
+    heart.innerHTML = "❤️";
+    heart.style.position = "fixed";
+    heart.style.left = Math.random() * 100 + "%";
+    heart.style.top = "-50px";
+    heart.style.fontSize = Math.random() * 30 + 20 + "px";
+    heart.style.opacity = "1";
+    heart.style.pointerEvents = "none";
+    heart.style.zIndex = "9998";
+    document.body.appendChild(heart);
+    
+    let posY = -50;
+    const interval = setInterval(() => {
+      posY += 3;
+      heart.style.top = posY + "px";
+      heart.style.opacity = 1 - (posY / window.innerHeight);
+      if (posY > window.innerHeight) {
+        clearInterval(interval);
+        heart.remove();
+      }
+    }, 30);
+  }
 }
 
-const interval = setInterval(updateCountdown, 1000);
-updateCountdown();
+/* ---------------- SLIDESHOW ---------------- */
+document.getElementById("startBtn").onclick = () => {
+  hbSound.pause();
+  hbSound.currentTime = 0;
+  romanticSound.play().catch(err => console.log("Play failed:", err));
+  startSlideshow();
+};
 
-// Slide show
-function startSlideShow() {
-  let i = 0;
-  const slides = document.getElementsByClassName("slide");
-  function showSlide() {
-    for(let j=0;j<slides.length;j++) slides[j].style.display="none";
-    slides[i].style.display="block";
-    i = (i+1)%slides.length;
-    setTimeout(showSlide,3000);
+function startSlideshow() {
+  birthdayMsg.style.display = "none";
+
+  const slideBox = document.getElementById("slides");
+  slideBox.style.display = "block";
+
+  const TOTAL_SLIDES = 31;
+  const slides = [];
+
+  for (let i = 1; i <= TOTAL_SLIDES; i++) {
+    const img = document.createElement("img");
+    img.src = `zurag${i}.JPG`;
+    img.className = "slide";
+    slideBox.appendChild(img);
+    slides.push(img);
   }
-  showSlide();
+
+  let current = 0;
+  let cycleCount = 0;  // track how many full cycles completed
+
+  function adjustHeight(img) {
+    const temp = new Image();
+    temp.src = img.src;
+    temp.onload = function () {
+      const ratio = temp.height / temp.width;
+      const newHeight = slideBox.clientWidth * ratio;
+      slideBox.style.height = newHeight + "px";
+    };
+  }
+
+  slides[current].style.display = "block";
+  slides[current].style.opacity = 1;
+  adjustHeight(slides[current]);
+
+  setInterval(() => {
+    slides[current].style.opacity = 0;
+
+    setTimeout(() => {
+      slides[current].style.display = "none";
+      current = (current + 1) % slides.length;
+
+      // check if we completed one full cycle (wrapped around to start)
+      if (current === 0) {
+        cycleCount++;
+        // show game button after first cycle completes
+        if (cycleCount === 1) {
+          showGameButton();
+        }
+      }
+
+      slides[current].style.display = "block";
+      adjustHeight(slides[current]);
+
+      setTimeout(() => slides[current].style.opacity = 1, 50);
+    }, 800);
+
+  }, 4000);
 }
 
-// Confetti
+function showGameButton() {
+  const gameBtn = document.getElementById("gameBtn");
+  gameBtn.classList.add("show");
+  gameBtn.onclick = () => {
+    window.location.href = "jijigtogloom.html";
+  };
+}
+
+
+
+/* ---------------- CONFETTI ---------------- */
 function startConfetti() {
   const canvas = document.getElementById('confetti');
   const ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
-  const confettiCount = 1000;
+  const count = 150;
   const confetti = [];
 
-  for(let i=0;i<confettiCount;i++){
+  for(let i=0;i<count;i++){
     confetti.push({
       x: Math.random()*canvas.width,
       y: Math.random()*canvas.height - canvas.height,
       r: Math.random()*6+4,
-      d: Math.random()*confettiCount,
+      d: Math.random()*count,
       color: `hsl(${Math.random()*360}, 100%, 50%)`,
-      tilt: Math.random()*10-10
+      tilt: Math.random()*10-10,
+      tiltAngle: 0
     });
   }
 
-  function drawConfetti() {
+  function draw() {
     ctx.clearRect(0,0,canvas.width,canvas.height);
     confetti.forEach(c=>{
       ctx.beginPath();
@@ -103,19 +321,20 @@ function startConfetti() {
       ctx.moveTo(c.x + c.tilt + c.r/4, c.y);
       ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r/4);
       ctx.stroke();
-    });
-    updateConfetti();
-  }
 
-  function updateConfetti() {
-    confetti.forEach(c=>{
+      c.tiltAngle += 0.1;
       c.y += Math.cos(c.d) + 1 + c.r/2;
-      c.x += Math.sin(c.d) * 2;
-      if(c.y > canvas.height){ c.y = -10; c.x = Math.random()*canvas.width; }
+      c.x += Math.sin(c.tiltAngle) * 2;
+
+      if(c.y > canvas.height){
+        c.y = -10;
+        c.x = Math.random()*canvas.width;
+      }
     });
+    requestAnimationFrame(draw);
   }
 
-  setInterval(drawConfetti, 20);
+  draw();
 }
 </script>
 
