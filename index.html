@@ -167,8 +167,10 @@ const countdownEl = document.getElementById("countdown");
 const birthdayMsg = document.getElementById("birthdayMsg");
 const hbSound = document.getElementById("hbSound");
 const romanticSound = document.getElementById("romanticSound");
+
+  const target = new Date(new Date().getTime() + 5000);
 // 1. Тухайн target огноог Date объект болгож өгнө
-const targetDate = new Date('2025-11-16T00:00:00');
+/*const targetDate = new Date('2025-11-16T00:00:00');
 
 // 2. Countdown update function
  // таны countdown div
@@ -196,7 +198,7 @@ function updateCountdown() {
 
 // 3. Интервал
 const interval = setInterval(updateCountdown, 1000);
-updateCountdown();
+updateCountdown();*/
 
 const timer = setInterval(() => {
   const now = new Date();
